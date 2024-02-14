@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+  <head>
+    <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Content Management</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  </head>
+ <body class="hold-transition sidebar-mini layout-navbar-fixed">
+ <div class="wrapper">
+    <!-- /* Content of this page will be decorated by the elements of layout.html (layout) */ -->
+  <div class="content-wrapper" layout:fragment="content">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+      <div class="row pull-right">
+      <div class="col-sm-6">
+            <h1 class="m-0">Content Management</h1>
+          </div>
+      <div class="col-md-6 text-right">
+        <a th:href="@{/create-content}"> 
+        <button type="button" class="btn btn-primary mr-2" id="createNewQuetsion">
+        <i class="fas fa-plus"></i> New Question</button> 
+        </a>
+        </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+	  <div class="row justify-content-md-center">
+	  <div class="card  elevation-0  col-md-12">
+             
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="organisationsTable" class="table table-sm table-valign-middle table-head-fixed">
+                  <thead>
+                  <tr>
+                  <th>Question</th>
+                    <th>Status</th>
+                    <th>Date of Creation</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+       </div>
+	  </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+    
+  </div>
+  <!-- /.content-wrapper -->
+    </div>
+ 
+ <!-- REQUIRED JS SCRIPTS -->
+	<th:block layout:fragment="scripts">  
+    <script>
+    $(document).ready(function(){
+    	$(".sidebar nav li> a").removeClass("active");
+	    $(".sidebar nav li> a#organisations").addClass("active");
+	    
+	    $("#organisationsTable").DataTable({
+		      "responsive": true, "lengthChange": false, "autoWidth": true
+		});
+	    
+	  $("body").delegate("#createNewOrganisation", "click", function(e){  
+        	e.preventDefault();
+    	    $.ajax({
+    	            url : /*[[@{/}]]*/'getOrganisationFormFragment',  
+    	        }).done(function(result) {
+    	        	$(".control-sidebar-content").html(result);
+    	        	$(".control-sidebar-title").text("New Organisation");
+    	        	$("#createNewOrganisation").ControlSidebar('show');
+    	        });
+	    });
+	  
+	  $("body").delegate(".custom-file-input","change",function(){
+	  	  var fileName = $(this).val().split("\\").pop();
+	  	  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+		});
+	  
+	  $("body").delegate("#saveOrganisation", "click", function(e){
+	    	e.preventDefault();
+	    	var id= $(this).attr("data-refId");
+		  	var validation = true;
+			 $("#organisationForm input").each(function() { 
+				 var value = $(this).val();
+				 if($(this).prop('required') && value==""){
+					 $(this).addClass("is-invalid");
+					  validation = false;
+				 }else {
+					 $(this).removeClass("is-invalid");
+				 };
+				});
+			 
+			 if(validation==false){
+					return false; 
+			 }else{
+				 
+				 var companyForm = $("#organisationForm")[0];
+				 var formData = new FormData(companyForm);
+				//alert(JSON.stringify($("#companyForm").serialize()));
+		    	$.ajax({
+						type: "POST",
+						 enctype: 'multipart/form-data',
+						 data: formData,
+						 processData: false,
+						 contentType: false,
+			             url :'updateOrganisation?id='+id,
+			        }).done(function(data) {
+			        var org = data.msg;
+			        $("#createNewOrganisation").ControlSidebar('collapse');
+			        var date = moment(org.createdDate).format("DD-MM-YYYY");
+			        var events = '<a href="#" class="editOrganisation"><i class="fa fa-edit mr-2"></i></a><a href="#" class="deleteOrganisation"><i class="fa fa-trash text-danger"></i></a>';
+			        var code = '<a href="/organisation?id='+org.id+'">'+org.code+'</a>';
+			        var row = $('#organisationsTable').DataTable().row.add([code,org.name,org.city,org.state,date,events],0).draw();
+			        row.nodes().to$().attr('id', org.id);
+			        });
+			 }
+	    });
+	  
+	    
+	    $("#userModal").on('hide.bs.modal', function () {
+	    	$("#userForm").trigger("reset");
+	    	$("#userForm input").removeClass("is-invalid");
+	    });
+	    
+	    $("body").delegate("#saveUser", "click", function(e){
+	    	var userId =  parseInt($("#userModal").data("id"));
+		  	var validation = true;
+			 $("#userForm input").each(function() { 
+				 var value = $(this).val();
+				 if($(this).prop('required') && value==""){
+					 $(this).addClass("is-invalid");
+					  validation = false;
+				 }else {
+					 $(this).removeClass("is-invalid");
+				 };
+				});
+			 
+			 
+			 if(validation==false){
+					return false; 
+			 }else{
+				 
+				 var userForm = $("#userForm")[0];
+				 var userData = new FormData(userForm);
+				 var userRole = $("select[name='userrole'] :selected").val();
+				 
+				 if(userId == 0){
+					 var username = $("input[name='username']").val();
+					 $.ajax({
+				            url         : /*[[@{/}]]*/'validateUsername?username='+username, 
+				        }).done(function(data) {
+				        	if(data.msg.length > 0){
+				        		alert("Username already Exits. Please select a different one");
+				        		return false; 
+				        	}else{
+				        		 $.ajax({
+							            type        : 'POST', 
+							            url         : /*[[@{/}]]*/'createCompanyUser?uid='+userId+'&role='+userRole, 
+							            data        : userData, 
+							            enctype : 'multipart/formdata',
+							            processData: false,
+							            contentType: false,
+							        }).done(function(data) {
+							        	$('#userModal').modal('toggle');
+							        	location.reload();
+									});
+				        	}
+						});
+				 }else{
+						 $.ajax({
+					            type        : 'POST', 
+					            url         : /*[[@{/}]]*/'createCompanyUser?uid='+userId+'&role='+userRole, 
+					            data        : userData, 
+					            enctype : 'multipart/formdata',
+					            processData: false,
+					            contentType: false,
+					        }).done(function(data) {
+					        	$('#userModal').modal('toggle');
+					        	location.reload();
+							});
+					}
+ 
+			 }
+	    });
+	    
+    });// End function
+	
+    </script>
+  </body>
+</html>

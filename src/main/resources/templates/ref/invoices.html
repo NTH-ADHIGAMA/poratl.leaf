@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+  <head>
+    <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Invoices</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  </head>
+ <body class="hold-transition sidebar-mini layout-navbar-fixed">
+ <div class="wrapper">
+    <!-- /* Content of this page will be decorated by the elements of layout.html (layout) */ -->
+  <div class="content-wrapper" layout:fragment="content">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+      <div class="row pull-right">
+      <div class="col-sm-6">
+            <h1 class="m-0">Invoices</h1>
+          </div>
+      <div class="col-md-6">
+        <a href="#" id="createNewInvoice">
+        <button type="button" class="btn btn-primary float-right"><i class="fas fa-plus"></i> Invoice</button>
+        </a>
+        </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+	  <div class="row justify-content-md-center">
+	  <div class="card  elevation-0  col-md-12">
+             
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="invoicesTable" class="table table-sm table-valign-middle table-head-fixed">
+                  <thead>
+                  <tr>
+                    <th>Invoice #</th>
+                    <th>Receiver's Name</th>
+                    <th>Billing Month</th>
+                    <th>Invoice Date</th>
+                    <th>TotalAmount</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+					    <tr th:each="inv: ${invoices}">
+					       <td><a th:href="@{'/invoice?id='+${inv.id}}" th:text="${inv.invoiceNumber}"></a></td>
+					       <td th:text="${inv.receiversName}"></td>
+					       <td th:text="${inv.billingMonth}"></td>
+					       <td th:text="${#temporals.format(inv.invoiceDate, 'dd/MM/yyyy')}"></td>
+					       <td th:text="${inv.totalAmount}"></td>
+					       <td>
+					       <a th:href="'media/'+${inv.invoiceCopy}" target="_blank"><i class="fa fa-lg fa-file-pdf text-red pr-2"></i></a>
+					       <span><i class="far fa-bell fa-lg pr-2"></i></span>
+					       <span><i class="fa fa-download fa-lg pr-2"></i></span>
+					       </td>
+					    </tr>
+                  </tbody>
+				<tfoot></tfoot>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+       </div>
+	  </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+    
+    <div class="modal fade" id="invoiceModal">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+            <div class="modal-header p-2">
+              <h4 class="modal-title">New Invoice</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+            <form class="form-horizontal" id="invoiceForm">
+                <div class="card-body p-2">
+                <div class="row">
+                <div class="col-6 px-3">
+                  <div class="form-group row">
+				<div class="col-6">
+				<label class="control-label">Invoice #</label>
+                      <input type="text" class="form-control" name="invoiceNumber" placeholder="Invoice Number" required>
+				</div>
+				<div class="col-6">
+				<label class="control-label">Invoice Category</label> 
+						<select name="category"  class="form-control select2" style="width: 100%;">
+						<option th:each="cat :${categories}"  th:id="${cat.id}" th:value="${cat.category}" th:text="${cat.category}"></option>
+						</select>
+				</div>
+				</div>
+                   <div class="form-group row">
+					<label class="control-label col-md-4">Receiver's Name</label> 
+					<div class="col-md-8 no-padding">
+						<select name="receiversName"  class="form-control select2" style="width: 100%;">
+						<option th:each="cmp :${companies}"  th:id="${cmp.id}" th:value="${cmp.companyCode}" th:text="${cmp.invoiceName}"
+						 ></option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="control-label col-md-4">Receiver's Branch</label> 
+					<div class="col-md-8 no-padding">
+						<select name="branchName"  class="form-control select2" style="width: 100%;"></select>
+					</div>
+				</div>
+                  <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">FPR Name</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" name="fprName" placeholder="Contact Name" required>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                  <div class="col-md-6 form-label-group">
+                    <input type="text" id="fprPhone" name="fprPhone" class="form-control" placeholder="Phone" required autofocus>
+                    <label for="fprPhone">Phone</label>
+	                </div>
+	                <div class="col-md-6 form-label-group">
+	                    <input type="email" id="fprEmail" name="fprEmail" class="form-control" placeholder="Email" required autofocus>
+	                    <label for="fprEmail">Email</label>
+	                </div>
+                  </div>
+                  
+                  <div class="form-group form-label-group">
+                    <textarea class="form-control" rows="2" id="invoiceNote" name="invoiceNote" required placeholder="Enter ..."></textarea>
+                  <label for="invoiceNote">Invoice Note</label>
+                  </div>
+				</div>
+				<div class="col-6 px-3">
+				<div class="form-group row">
+				<div class="col-6">
+				<label class="form-label">Billing Month</label>
+				<div class="input-group date" id="billingMonth" data-target-input="nearest">
+						<input type="text" class="form-control datetimepicker-input" data-target="#billingMonth" name="billingMonth" />
+						<div class="input-group-append" data-target="#billingMonth" data-toggle="datetimepicker">
+						<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+						</div>
+					</div>
+				</div>
+				<div class="col-6">
+				<label class="form-label">Invoice Date</label>
+					<div class="input-group date" id="invoiceDate" data-target-input="nearest">
+						<input type="text" class="form-control datetimepicker-input" data-target="#invoiceDate" name="date" />
+						<div class="input-group-append" data-target="#invoiceDate" data-toggle="datetimepicker">
+							<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+						</div>
+					</div>
+				</div>
+				</div>
+				
+                  <div class="form-group row">
+                    <label  class="col-12 col-form-label">Taxable Amount</label>
+                    <div class="col-4">
+                      <input type="text" class="form-control" name="taxableValue" placeholder="Taxable Amount" required>
+                    </div>
+                    <div class="col-4 form-label-group">
+                    <input type="text" id="cgst" name="taxCgst" class="form-control" placeholder="CGST" required autofocus>
+                    <label for="cgst">CGST</label>
+	                </div>
+	                <div class="col-4 form-label-group">
+	                    <input type="text" id="cgst" name="taxSgst" class="form-control" placeholder="SGST" required autofocus>
+	                    <label for="sgst">SGST</label>
+	                </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-3 col-form-label">TDS Amount</label>
+                    <div class="col-4">
+                      <input type="text" class="form-control" name="tdsAmount" placeholder="TDS Amount" required>
+                    </div>
+                  </div>
+                  
+                  <div class="form-group row">
+                    <label class="col-3 col-form-label">Total Amount</label>
+                    <div class="col-6">
+                      <input type="text" class="form-control" name="totalAmount" placeholder="Total Amount" required>
+                    </div>
+                  </div>
+                  <hr class="pt-2">
+                  <div class="form-group row">
+                  <label class="form-label  col-md-12"><i class="fa fa-paperclip  fa-lg pr-2"></i>Invoice Copy</label>
+					<div class="custom-file col-md-8">
+						<input type="file" class="custom-file-input" id="invoiceCopy" name="fileAttachment" accept=".pdf" >
+						<label class="custom-file-label" for="invoiceCopy">Choose file</label>
+					</div>
+				 </div>
+				 
+				</div>
+                </div>  
+                </div>
+                <!-- /.card-body -->
+                
+                <!-- /.card-footer -->
+              </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="saveInvoice">Create</button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+      
+  </div>
+  <!-- /.content-wrapper -->
+    </div>
+    
+     <!-- REQUIRED JS SCRIPTS -->
+	<th:block layout:fragment="scripts">  
+	
+	<script type="text/javascript" th:inline="javascript">
+	    /*<![CDATA[*/
+	    var companyList = [[${companies}]];
+	    var branchList = [[${branches}]];
+	    /*]]>*/
+	</script>
+	
+    <script>
+    $(document).ready(function(){
+	    $(".sidebar nav li> a#orders").addClass("active");
+		bsCustomFileInput.init();
+		
+	    $("body").delegate(".custom-file-input","change",function(){
+	    	  var fileName = $(this).val().split("\\").pop();
+	    	  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+	    });
+	    
+	  //Date picker
+	    $('#invoiceDate').datetimepicker({
+	        format: 'DD-MM-yyyy',
+	        defaultDate: new Date()
+	    });
+	  //Date picker
+	    $('#billingMonth').datetimepicker({
+	         format: 'MMM-YYYY',
+	        defaultDate: new Date()
+	    });
+	    
+	    $("#invoicesTable").DataTable({
+		      "responsive": true, "lengthChange": false, "autoWidth": true
+		});
+	    
+	    $("body").delegate("#createNewInvoice", "click", function(e){
+		   e.preventDefault();
+		   $("#invoiceModal").data('id',"0").modal("toggle");
+		   $("select[name='receiversName']").trigger("change");
+	    }); 
+	    
+	    $("#invoiceModal").on('hide.bs.modal', function () {
+	    	$("#invoiceForm").trigger("reset");
+	    	$("#invoiceForm input").removeClass("is-invalid");
+	    });
+	    
+	    $("body").delegate("select[name='receiversName']","change",function(e){
+	    	var cmpId = $(this).find(":selected").attr("id");
+	    	var cmpCode = $(this).find(":selected").val();
+	    	var companyObj = companyList.filter(c => c.companyCode === cmpCode);
+	    	var cmp = companyObj[0];
+	    	$( 'input[name="fprName"]').val(cmp.fprName);
+	    	$( 'input[name="fprPhone"]').val(cmp.fprPhone);
+	    	$( 'input[name="fprEmail"]').val(cmp.fprEmail);
+	    	
+	    	var branchObj = branchList.filter(b => b.companyCode === cmpCode);
+	    	var branchOptions="";
+	    	$.each(branchObj, function (index, value) {
+        		var branch = value;
+        		branchOptions = branchOptions + "<option value="+branch.branchCode+">"+branch.branchName+"</option>";
+	    	 });
+	    	$( 'select[name="branchName"]').append(branchOptions);
+			//$(".report-form").trigger("filter",[reportType]);
+	    });
+	    
+	    $("body").delegate("#saveInvoice", "click", function(e){
+	    	var invoiceId =  parseInt($("#invoiceModal").data("id"));
+		  	var validation = true;
+			 $("#invoiceForm input, #invoiceForm textarea").each(function() { 
+				 var value = $(this).val();
+				 if($(this).prop('required') && value==""){
+					 $(this).addClass("is-invalid");
+					  validation = false;
+				 }else {
+					 $(this).removeClass("is-invalid");
+				 };
+				});
+			 
+			 
+			 if(validation==false){
+					return false; 
+			 }else{
+				 
+				 var invoiceForm = $("#invoiceForm")[0];
+				 var formData = new FormData(invoiceForm);
+				 formData.append("fileAttachment",$("input[name='fileAttachment']")[0].files[0]);
+				// alert(JSON.stringify($("#invoiceForm").serialize()));
+				var invDate = $("input[name='date']").val();
+				formData.append("invDate",invDate);
+				
+				alert(invDate);
+				 if(invoiceId == 0){
+					 $.ajax({
+				            type        : 'POST', 
+				            url         : /*[[@{/}]]*/'createInvoice?id='+invoiceId, 
+				            data        : formData, 
+				            enctype : 'multipart/formdata',
+				            processData: false,
+				            contentType: false,
+				        }).done(function(data) {
+				        	alert(JSON.stringify(data.msg));
+				        	$('#invoiceModal').modal('toggle');
+				        	location.reload();
+						});
+				 }else{}
+ 
+			 }
+	    });
+	    
+    });// End function
+    </script>
+    </th:block>
+  </body>
+</html>

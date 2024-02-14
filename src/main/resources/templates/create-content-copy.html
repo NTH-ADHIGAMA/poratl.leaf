@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+  <head>
+    <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Content Management</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  </head>
+ <body class="hold-transition sidebar-mini layout-navbar-fixed">
+ <div class="wrapper">
+    <!-- /* Content of this page will be decorated by the elements of layout.html (layout) */ -->
+  <div class="content-wrapper" layout:fragment="content">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+      <div class="row pull-right">
+      <div class="col-sm-6">
+            <h1 class="m-0">Create Content</h1>
+          </div>
+      <div class="col-md-6 text-right">
+        </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+    <div class="container-fluid">
+	  <div class="row justify-content-md-center">
+	  <div class="card elevation-0 col-md-12">
+         <div class="card-body p-0">
+	  		<div class="bs-stepper " id="problemStepper">
+            <div class="bs-stepper-header" role="tablist">
+              <!-- your steps here -->
+              <div class="step active" data-target="#summary">
+                <button type="button" class="step-trigger" role="tab" aria-controls="summary" id="summary-trigger" >
+                  <span class="bs-stepper-circle">1</span>
+                  <span class="bs-stepper-label">Summary</span>
+                </button>
+              </div>
+              <div class="line"></div>
+              <div class="step" data-target="#problem">
+                <button type="button" class="step-trigger" role="tab" aria-controls="problem" id="problem-trigger">
+                  <span class="bs-stepper-circle">2</span>
+                  <span class="bs-stepper-label">Problem</span>
+                </button>
+              </div>
+              <div class="line"></div>
+              <div class="step" data-target="#solution">
+                <button type="button" class="step-trigger" role="tab" aria-controls="solution" id="solution-trigger">
+                  <span class="bs-stepper-circle">3</span>
+                  <span class="bs-stepper-label">Solution</span>
+                </button>
+              </div>
+         </div><!-- stepper-Header End -->
+         <div class="bs-stepper-content p-3">
+         
+         <div id="summary" class="content active" role="tabpanel" aria-labelledby="summary-trigger">
+          	 <form id="summaryForm" class="form-horizontal">
+                 <div class="form-group row">
+                <label class="col-form-label col-4">Subject:</label> 
+                <div class="col-8">
+				 <input class="form-control" name="subject" required>
+                </div>
+                </div>
+                 <div class="form-group row">
+                <label class="col-form-label col-4">Problem Category:</label> 
+                <div class="col-8">
+				 <input class="form-control"  name="category" required>
+                </div>
+                </div>
+                <div class="form-group row">
+                <label class="col-form-label col-4">Short Description:</label> 
+                <div class="col-8">
+				 <textarea class="form-control"  name="description" rows="3" placeholder="Enter ..."></textarea>
+                </div>
+                </div>
+            </form> 
+          	 <div class="row"> 
+              <div class="col-md-6"></div>
+               <div class="col-md-6 text-right"> 
+               <button class="btn btn-primary" onclick="stepper.next()">Next</button>   
+              </div> 
+              </div>         
+          </div>
+          <div id="problem" class="content" role="tabpanel" aria-labelledby="problem-trigger">
+          		<textarea id="problemnote" placeholder="">
+                Place <em>your</em> <u>question</u> <strong>here</strong>
+              </textarea>
+              <div class="row"> 
+              <div class="col-md-6"> 
+              <button class="btn btn-default" onclick="stepper.previous()">Previous</button>
+              </div>
+               <div class="col-md-6 text-right"> 
+               <button class="btn btn-primary" onclick="stepper.next()">Next</button>   
+              </div> 
+              </div>
+          </div>
+          <div id="solution" class="content" role="tabpanel" aria-labelledby="solution-trigger">
+          	<textarea id="solutionnote">
+                Place <em>your</em> <u>solution</u> <strong>here</strong>
+              </textarea> 
+              <div class="row"> 
+              <div class="col-md-6"> 
+              <button class="btn btn-default" onclick="stepper.previous()">Previous</button>
+              </div>
+               <div class="col-md-6 text-right"> 
+               <button type="submit" class="btn btn-primary">Save</button> 
+              <button type="submit" class="btn btn-success">Save & Publish</button>   
+              </div> 
+              </div>    
+          </div>
+         </div>
+         
+		 </div>
+	  </div>
+	  </div>
+       </div>  
+       
+	  </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+    
+  </div>
+  <!-- /.content-wrapper -->
+    </div>
+ 
+ <!-- REQUIRED JS SCRIPTS -->
+	<th:block layout:fragment="scripts">  
+    <script>
+    $(document).ready(function(){
+    	$(".sidebar nav li> a").removeClass("active");
+	    $(".sidebar nav li> a#organisations").addClass("active");
+	    
+	    $('#problemnote,#solutionnote').summernote({
+            height: 200,
+            toolbar: [
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+				['color', ['color']],
+                ['para', ['ol', 'ul', 'paragraph']],
+				['insert', ['hr']],
+				['table', ['table']],
+				['insert', ['picture', 'link', 'math']],
+				['font', ['underline', 'strikethrough','subscript', 'superscript']],
+				['misc', ['fullscreen', 'codeview', 'undo', 'redo']]
+              
+            ],
+        });
+	    
+	 // BS-Stepper Init
+	    var stepper = new Stepper($(".bs-stepper")[0], {
+		  linear: false,
+		  animation: false
+		});
+		
+		$(".btnNext").click(function () {
+		  stepper.next();
+		});
+		
+		$(".btnPrevious").click(function () {
+		  stepper.previous();
+		});
+		
+    });// End function
+	
+    </script>
+  </body>
+</html>

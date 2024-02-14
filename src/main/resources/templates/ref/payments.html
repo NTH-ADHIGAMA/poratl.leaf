@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+  <head>
+    <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Payments</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  </head>
+ <body class="hold-transition sidebar-mini layout-navbar-fixed">
+ <div class="wrapper">
+    <!-- /* Content of this page will be decorated by the elements of layout.html (layout) */ -->
+  <div class="content-wrapper" layout:fragment="content">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+      <div class="row pull-right">
+      <div class="col-sm-6">
+            <h1 class="m-0">Payments</h1>
+          </div>
+      <div class="col-md-6">
+        <a href="#">
+        <button type="button" id="createPayment" class="btn btn-primary float-right"><i class="fas fa-plus"></i> New Payment</button>
+        </a>
+        </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+	  <div class="row justify-content-md-center">
+	  <div class="card  elevation-0  col-md-12">
+             
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="paymentsTable" class="table table-sm table-valign-middle table-head-fixed">
+                  <thead>
+                  <tr>
+                    <th>Invoice #</th>
+                    <th>Customer</th>
+                    <th>Amount</th>
+                    <th>Payments</th>
+                    <th>Due Amount</th>
+                     <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    
+                  </tbody>
+				<tfoot></tfoot>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+       </div>
+	  </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+    
+    <div class="modal fade" id="paymentModal">
+        <div class="modal-dialog modal-md">
+          <div class="modal-content">
+            <div class="modal-header p-2">
+              <h4 class="modal-title">New Payment</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+            <form class="form-horizontal" id="paymentForm">
+                <div class="card-body p-2">
+                <div class="row">
+                <div class="col-md-12">
+                <div class="form-group row">
+                    <label class="col-md-4 col-form-label">Invoice #</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" name="invoiceNumber" placeholder="Invoice Number" required>
+				</div>
+                  </div>
+                  
+                <div class="form-group row">
+				<div class="col-6">
+				<label class="form-label">Payment Amount</label>
+				<input type="text" class="form-control" name="receivedAmount" placeholder="Amount" required>
+				
+				</div>
+				<div class="col-6">
+				<label class="form-label">Payment Date</label>
+					<div class="input-group date" id="paymentDate" data-target-input="nearest">
+						<input type="text" class="form-control datetimepicker-input" data-target="#paymentDate" name="date" />
+						<div class="input-group-append" data-target="#paymentDate" data-toggle="datetimepicker">
+							<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+						</div>
+					</div>
+				</div>
+				</div>
+				<div class="form-group row">
+                    <label class="col-md-4 col-form-label">Payment Mode</label>
+                    <div class="col-sm-8">
+                      <select name="category"  class="form-control select2" style="width: 100%;">
+						<option value="CASH">Cash</option>
+						<option value="CHK">Cheque</option>
+						<option value="TPT">Transfer</option>
+						</select>
+						</div>
+                  </div>
+				<div class="form-group form-label-group">
+                  <textarea class="form-control" rows="2" id="paymentRemarks" name="remarks" required placeholder="Enter ..."></textarea>
+                  <label for="remarks">Remarks</label>
+                 </div>
+                 </div>
+                </div>  
+                </div>
+                <!-- /.card-body -->
+                
+                <!-- /.card-footer -->
+              </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="savePayment">Create</button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+      
+  </div>
+  <!-- /.content-wrapper -->
+    </div>
+    
+     <!-- REQUIRED JS SCRIPTS -->
+	<th:block layout:fragment="scripts">  
+    <script>
+    $(document).ready(function(){
+	    $(".sidebar nav li> a#orders").addClass("active");
+	    
+	    $("#paymentsTable").DataTable({
+		      "responsive": true, "lengthChange": false, "autoWidth": true
+		});
+	    
+	    $('#paymentDate').datetimepicker({
+	        format: 'DD-MM-yyyy',
+	        defaultDate: new Date()
+	    });
+	    
+	    $("body").delegate("#createPayment", "click", function(e){
+		  	  e.preventDefault();
+		   $("#paymentModal").data('id',"0").modal("toggle");
+	    }); 
+	    
+	    $("#paymentModal").on('hide.bs.modal', function () {
+	    	$("#paymentForm").trigger("reset");
+	    	$("#paymentForm input").removeClass("is-invalid");
+	    });
+	    
+	    $("body").delegate("#savePayment", "click", function(e){
+	    	var paymentId =  parseInt($("#paymentModal").data("id"));
+		  	var validation = true;
+			 $("#paymentForm input, #paymentForm textarea").each(function() { 
+				 var value = $(this).val();
+				 if($(this).prop('required') && value==""){
+					 $(this).addClass("is-invalid");
+					  validation = false;
+				 }else {
+					 $(this).removeClass("is-invalid");
+				 };
+				});
+			 
+			 
+			 if(validation==false){
+					return false; 
+			 }else{
+				 
+				 var paymentForm = $("#paymentForm")[0];
+				 var formData = new FormData(paymentForm);
+				 //formData.append("fileAttachment",$("input[name='fileAttachment']")[0].files[0]);
+				// alert(JSON.stringify($("#invoiceForm").serialize()));
+				var payDate = $("input[name='date']").val();
+				formData.append("payDate",payDate);
+				
+				 if(paymentId == 0){
+					 $.ajax({
+				            type        : 'POST', 
+				            url         : /*[[@{/}]]*/'createPayment?id='+paymentId, 
+				            data        : formData, 
+				            enctype : 'multipart/formdata',
+				            processData: false,
+				            contentType: false,
+				        }).done(function(data) {
+				        	alert(JSON.stringify(data.msg));
+				        	$('#paymentModal').modal('toggle');
+				        	location.reload();
+						});
+				 }else{}
+ 
+			 }
+	    });
+	    
+    });// End function
+	
+    </script>
+  </body>
+</html>

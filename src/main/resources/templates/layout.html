@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+
+	<html lang="en" xmlns:th="http://www.thymeleaf.org"  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE"></title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet" th:href="@{plugins/fontawesome-free/css/all.min.css}">
+  <link rel="stylesheet" th:href="@{fonts/ionicons/css/ionicons.min.css}">
+  <link rel="stylesheet" th:href="@{css/adminlte.min.css}">
+  <link rel="stylesheet" th:href="@{css/floating-labels.css}">
+  <link rel="stylesheet" th:href="@{plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+  <link rel="stylesheet" th:href="@{plugins/daterangepicker/daterangepicker.css}">
+  <link rel="stylesheet" th:href="@{plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css}">
+  <link rel="stylesheet" th:href="@{plugins/summernote/summernote-bs4.min.css}">
+    <link rel="stylesheet" th:href="@{plugins/summernote/katex.min.css}">
+    <link rel="stylesheet" th:href="@{plugins/bs-stepper/css/bs-stepper.min.css}">
+  
+  <link rel="stylesheet" th:href="@{plugins/datatables-bs4/css/dataTables.bootstrap4.min.css}">
+  <link rel="stylesheet" th:href="@{plugins/datatables-responsive/css/responsive.bootstrap4.min.css}">
+  <link rel="stylesheet" th:href="@{plugins/datatables-buttons/css/buttons.bootstrap4.min.css}">
+  <script th:src="@{plugins/jquery/jquery.min.js}"></script>
+  
+  <th:block layout:fragment="styles"></th:block>
+
+</head>
+
+
+<body class="hold-transition sidebar-mini layout-navbar-fixed">
+ <div class="wrapper">
+  <!--/* Standard layout can be mixed with Layout Dialect */-->
+  <div th:replace="fragments/header :: header"></div>
+  <div th:replace="fragments/sidebar :: sidebar"></div>
+ <div class="content-wrapper" layout:fragment="content">
+  	<div>
+        <h1>Static content for prototyping purposes only</h1>
+     </div>
+ </div>
+ <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-light">
+    <!-- Control sidebar content goes here -->
+    <div class="card-header">
+            <h1 class="card-title control-sidebar-title text-bold">Card Title</h1>
+            <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-widget="control-sidebar">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+  </aside>
+  <!-- /.control-sidebar -->  
+</div>
+<!-- ./wrapper -->
+
+
+<script th:src="@{plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{plugins/bs-custom-file-input/bs-custom-file-input.min.js}"></script>
+<script th:src="@{plugins/jquery-ui/jquery-ui.min.js}"></script>
+<script th:src="@{plugins/moment/moment.min.js}"></script>
+<script th:src="@{plugins/daterangepicker/daterangepicker.js}"></script>
+<script th:src="@{plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js}"></script>
+<script th:src="@{plugins/summernote/summernote-bs4.min.js}"></script>
+<script th:src="@{plugins/summernote/summernote-math.js}"></script>
+<script th:src="@{plugins/summernote/katex.min.js}"></script>
+<script th:src="@{plugins/bs-stepper/js/bs-stepper.min.js}"></script>
+
+<script th:src="@{plugins/datatables/jquery.dataTables.min.js}"></script>
+<script th:src="@{plugins/datatables-bs4/js/dataTables.bootstrap4.min.js}"></script>
+<script th:src="@{plugins/datatables-responsive/js/dataTables.responsive.min.js}"></script>
+<script th:src="@{plugins/datatables-responsive/js/responsive.bootstrap4.min.js}"></script>
+<script th:src="@{plugins/datatables-buttons/js/dataTables.buttons.min.js}"></script>
+<script th:src="@{plugins/datatables-buttons/js/buttons.bootstrap4.min.js}"></script>
+<script th:src="@{plugins/datatables-buttons/js/buttons.html5.min.js}"></script>
+<script th:src="@{plugins/datatables-buttons/js/buttons.print.min.js}"></script>
+<script th:src="@{plugins/datatables-buttons/js/buttons.colVis.min.js}"></script>
+
+<script th:src="@{plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js}"></script>
+<script th:src="@{js/adminlte.js}"></script>
+<script th:src="@{js/demo.js}"></script>
+
+<!-- OPTIONAL SCRIPTS -->
+<th:block layout:fragment="scripts"></th:block>
+
+<script>
+  $(document).ready(function () {
+	
+	    $(".formatDateTime").each(function(){
+	    	var date = new Date($(this).text());
+	    	var dateFormatted = "";
+	    	if (!isNaN(date.getTime())) {
+	            // Months use 0 index.
+	            dateFormatted= date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear();
+	        }
+	    	
+	    	$(this).text(date.toLocaleString('en-IN', {hour12: true}));
+	    });
+	    
+	    $('body').delegate(".sidebar nav li> a",'click', function(e) {
+	    	$(".sidebar nav li> a").removeClass("active");
+	    	$(this).addClass("active");
+	    });
+	   
+ });
+ </script>
+</body>
+</html>

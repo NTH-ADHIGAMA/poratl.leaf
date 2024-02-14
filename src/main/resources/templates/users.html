@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout}">
+  <head>
+    <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Users</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  </head>
+ <body class="hold-transition sidebar-mini layout-navbar-fixed">
+ <div class="wrapper">
+    <!-- /* Content of this page will be decorated by the elements of layout.html (layout) */ -->
+  <div class="content-wrapper" layout:fragment="content">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+      <div class="row pull-right">
+      <div class="col-sm-6">
+            <h1 class="m-0">Users</h1>
+          </div>
+      <div class="col-md-6">
+        <a href="#"> <button type="button" class="btn btn-info float-right" id="createNewUser"><i class="fas fa-plus"></i> New User</button> </a>
+        </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </div>
+    
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+	  <div class="row justify-content-md-center">
+	  <div class="card  elevation-0  col-md-12">
+             
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="usersTable" class="table table-sm table-valign-middle table-head-fixed">
+                  <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Date of Creation</th>
+                     <th>Status</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                     <th:block th:each="user: ${users}">
+					    <tr>
+					       <!-- <td><a href="#" th:text="${user.name}"></a></td>
+					       <td th:text="${user.username}"></td>
+					       <td th:text="${user.email}"></td>
+					       <td th:text="${user.dateOfCreation}" class="formatDateTime"></td>
+					       <td th:text="${user.status}"></td>
+					       <td>
+					       <i class=" fa fa-edit fa-lg mr-2 text-muted editUser" ></i>
+							<i class=" fa fa-trash fa-lg mr-2  text-muted deleteUser"></i>
+							</td> -->
+					    </tr>
+					</th:block>
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+       </div>
+	  </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+    
+     <div class="modal fade" id="userModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Create User</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body pad">
+            <form class="form-horizontal" id="userForm">
+                <div class="card-body">
+                  <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Full Name</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" name="name" placeholder="Name" required>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label  class="col-sm-4 col-form-label">Email</label>
+                    <div class="col-sm-8">
+                      <input type="email" class="form-control" name="email" placeholder="Email" required>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Username</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" name="username" placeholder="Username" required>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Password</label>
+                    <div class="col-sm-8">
+                      <input type="password" class="form-control" name="password" placeholder="Password" required>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+					<label class="control-label col-md-4">Role Type</label> 
+					<div class="col-md-8 no-padding">
+						<select name="userrole"  class="form-control select2" style="width: 100%;">
+							<option th:each="role :${roles}"  th:id="${role.roleId}" th:value="${role.roleId}"
+						 th:text="${role.roleName}"></option>
+						</select>
+					</div>
+				</div>
+                  
+                </div>
+                <!-- /.card-body -->
+                
+                <!-- /.card-footer -->
+              </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="saveUser">Create</button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+    
+  </div>
+  <!-- /.content-wrapper -->
+    </div>
+ 
+ <!-- REQUIRED JS SCRIPTS -->
+	<th:block layout:fragment="scripts">  
+    <script>
+    $(document).ready(function(){
+	    $(".sidebar nav li> a#users").addClass("active");
+	    
+	    $("#usersTable").DataTable({
+		      "responsive": true, "lengthChange": false, "autoWidth": true
+		});
+	    
+	    $("body").delegate("#createNewUser", "click", function(e){
+		  	  e.preventDefault();
+		   $("#userModal").data('id',"0").modal("toggle");
+	    }); 
+	    
+	    $("#userModal").on('hide.bs.modal', function () {
+	    	$("#userForm").trigger("reset");
+	    	$("#userForm input").removeClass("is-invalid");
+	    });
+	    
+	    $("body").delegate("#saveUser", "click", function(e){
+	    	var userId =  parseInt($("#userModal").data("id"));
+		  	var validation = true;
+			 $("#userForm input").each(function() { 
+				 var value = $(this).val();
+				 if($(this).prop('required') && value==""){
+					 $(this).addClass("is-invalid");
+					  validation = false;
+				 }else {
+					 $(this).removeClass("is-invalid");
+				 };
+				});
+			 
+			 
+			 if(validation==false){
+					return false; 
+			 }else{
+				 
+				 var userForm = $("#userForm")[0];
+				 var userData = new FormData(userForm);
+				 var userRole = $("select[name='userrole'] :selected").val();
+				 
+				 if(userId == 0){
+					 var username = $("input[name='username']").val();
+					 $.ajax({
+				            url         : /*[[@{/}]]*/'validateUsername?username='+username, 
+				        }).done(function(data) {
+				        	if(data.msg.length > 0){
+				        		alert("Username already Exits. Please select a different one");
+				        		return false; 
+				        	}else{
+				        		 $.ajax({
+							            type        : 'POST', 
+							            url         : /*[[@{/}]]*/'createCompanyUser?uid='+userId+'&role='+userRole, 
+							            data        : userData, 
+							            enctype : 'multipart/formdata',
+							            processData: false,
+							            contentType: false,
+							        }).done(function(data) {
+							        	$('#userModal').modal('toggle');
+							        	location.reload();
+									});
+				        	}
+						});
+				 }else{
+						 $.ajax({
+					            type        : 'POST', 
+					            url         : /*[[@{/}]]*/'createCompanyUser?uid='+userId+'&role='+userRole, 
+					            data        : userData, 
+					            enctype : 'multipart/formdata',
+					            processData: false,
+					            contentType: false,
+					        }).done(function(data) {
+					        	$('#userModal').modal('toggle');
+					        	location.reload();
+							});
+					}
+ 
+			 }
+	    });
+	    
+    });// End function
+	
+    </script>
+  </body>
+</html>

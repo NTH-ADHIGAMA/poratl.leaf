@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+  <head>
+    <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Customers</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  </head>
+ <body class="hold-transition sidebar-mini layout-navbar-fixed">
+ <div class="wrapper">
+    <!-- /* Content of this page will be decorated by the elements of layout.html (layout) */ -->
+  <div class="content-wrapper" layout:fragment="content">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+      <div class="row pull-right">
+      <div class="col-sm-6">
+            <h1 class="m-0">Customers</h1>
+          </div>
+      <div class="col-md-6">
+        <a href="#" id="createNewCompany">
+        <button type="button" class="btn btn-primary float-right"><i class="fas fa-plus"></i> Add Company</button>
+        </a>
+        </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+	  <div class="row justify-content-md-center">
+	  <div class="card  elevation-0  col-md-12">
+             
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="companiesTable" class="table table-sm table-valign-middle table-head-fixed">
+                  <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Code</th>
+                    <th>FPR Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+					    <tr th:each="cmp: ${companies}">
+					       <td><a th:href="@{'/company?id='+${cmp.id}}" th:text="${cmp.companyName}"></a></td>
+					       <td th:text="${cmp.companyCode}"></td>
+					       <td th:text="${cmp.fprName}"></td>
+					       <td th:text="${cmp.fprPhone}"></td>
+					       <td th:text="${cmp.fprEmail}"></td>
+					       <td>
+					         <i class=" fa fa-edit fa-lg mr-2 text-muted editCompany" ></i>
+							<i class=" fa fa-trash fa-lg mr-2  text-muted deleteCompany"></i>
+							</td>
+					    </tr>
+                  </tbody>
+				<tfoot></tfoot>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+       </div>
+	  </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+    
+    <div class="modal fade" id="companyModal">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">New Company</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body pad">
+            <form class="form-horizontal" id="companyForm">
+                <div class="card-body">
+                <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Company Name</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" name="companyName" placeholder="Company Name" required>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label  class="col-sm-4 col-form-label">Company Code</label>
+                    <div class="col-sm-8">
+                      <input type="email" class="form-control" name="companyCode" placeholder="Company Code" required>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Invoice Name</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" name="invoiceName" placeholder="Company Registered Name" required>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+					<label class="control-label col-md-4">Group Company</label> 
+					<div class="col-md-8 no-padding">
+						<select name="companyGroup"  class="form-control select2" style="width: 100%;">
+						<option value="MAIN">Main Branch</option>
+						<option th:each="cmp :${companies}"  th:id="${cmp.id}" th:value="${cmp.companyCode}"
+						 th:text="${cmp.companyName}" th:if="${cmp.companyGroup=='MAIN'}"></option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group row">
+                    <label class="col-sm-4 col-form-label">GSTIN</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" name="gstin" placeholder="GST Number" required>
+                    </div>
+                  </div>
+				</div>
+				<div class="col-md-6">
+				<div class="form-group row">
+                    <label class="col-sm-4 col-form-label">FPR Name</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" name="fprName" placeholder="Contact Name" required>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label  class="col-sm-4 col-form-label">FPR Phone</label>
+                    <div class="col-sm-8">
+                      <input type="email" class="form-control" name="fprPhone" placeholder="Contact Phone" required>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">FPR Email</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" name="fprEmail" placeholder="Contact Email" required>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-form-label">Company Address</label>
+                    <textarea class="form-control" rows="3" name="companyAddress" required placeholder="Enter ..."></textarea>
+                  </div>
+				</div>
+                </div>  
+                </div>
+                <!-- /.card-body -->
+                
+                <!-- /.card-footer -->
+              </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="saveCompany">Create</button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+      
+  </div>
+  <!-- /.content-wrapper -->
+    </div>
+    
+     <!-- REQUIRED JS SCRIPTS -->
+	<th:block layout:fragment="scripts">  
+	
+	<script type="text/javascript" th:inline="javascript">
+	    /*<![CDATA[*/
+	    var companyList = [[${companies}]]
+	    /*]]>*/
+	</script>
+	
+    <script>
+    $(document).ready(function(){
+	    $(".sidebar nav li> a#orders").addClass("active");
+	    
+	    $("#companiesTable").DataTable({
+		      "responsive": true, "lengthChange": false, "autoWidth": true
+		});
+	    
+	    $("body").delegate("#createNewCompany", "click", function(e){
+		  	  e.preventDefault();
+		   $("#companyModal").data('id',"0").modal("toggle");
+	    }); 
+	    
+	    $("#companyModal").on('hide.bs.modal', function () {
+	    	$("#companyForm").trigger("reset");
+	    	$("#companyForm input").removeClass("is-invalid");
+	    });
+	    
+	    $("body").delegate("#saveCompany", "click", function(e){
+	    	var cmpId =  parseInt($("#companyModal").data("id"));
+		  	var validation = true;
+			 $("#companyForm input, #companyForm textarea").each(function() { 
+				 var value = $(this).val();
+				 if($(this).prop('required') && value==""){
+					 $(this).addClass("is-invalid");
+					  validation = false;
+				 }else {
+					 $(this).removeClass("is-invalid");
+				 };
+				});
+			 
+			 
+			 if(validation==false){
+					return false; 
+			 }else{
+				 
+				 var companyForm = $("#companyForm")[0];
+				 var companyData = new FormData(companyForm);
+				 //alert(JSON.stringify($("#companyForm").serialize()));
+				 if(cmpId == 0){
+					 var username = $("input[name='username']").val();
+					 $.ajax({
+				            type        : 'POST', 
+				            url         : /*[[@{/}]]*/'createCompany?id='+cmpId, 
+				            data        : companyData, 
+				            enctype : 'multipart/formdata',
+				            processData: false,
+				            contentType: false,
+				        }).done(function(data) {
+				        	alert(JSON.stringify(data.msg));
+				        	$('#companyModal').modal('toggle');
+				        	location.reload();
+						});
+				 }else{}
+ 
+			 }
+	    });
+	    
+    });// End function
+    </script>
+  </body>
+</html>
