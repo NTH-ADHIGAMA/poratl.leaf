@@ -35416,7 +35416,7 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
 
 .login-logo a,
 .register-logo a {
-  color: #fff;
+  color: #333;
 }
 
 .login-page,
@@ -35435,13 +35435,23 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
   -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
-  background-image: url("../img/tunnel-bg.png");
+  background-image: url("../img/login-bg.jpeg");
   background-position: center;
+  background-size: cover;
+   background-repeat: no-repeat;
 }
 
 .login-box,
 .register-box {
   width: 360px;
+  
+}
+
+@media (min-width: 576px) {
+  .login-box,
+  .register-box {
+   margin-left:50%;
+  }
 }
 
 @media (max-width: 576px) {
@@ -35449,6 +35459,7 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
   .register-box {
     margin-top: .5rem;
     width: 90%;
+    background-size: contain;
   }
 }
 
