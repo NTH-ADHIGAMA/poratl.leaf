@@ -35416,7 +35416,7 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
 
 .login-logo a,
 .register-logo a {
-  color: #495057;
+  color: #fff;
 }
 
 .login-page,
@@ -35435,6 +35435,8 @@ a.close.disabled, a.disabled.mailbox-attachment-close {
   -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
+  background-image: url("../img/tunnel-bg.png");
+  background-position: center;
 }
 
 .login-box,
