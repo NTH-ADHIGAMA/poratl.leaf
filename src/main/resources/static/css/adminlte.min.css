@@ -13197,6 +13197,14 @@ body:not(.layout-fixed) .main-sidebar .sidebar {
   border-bottom: 1px solid #dee2e6;
 }
 
+.sidebar-custom{
+	position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 5px;
+}
+
 .user-panel,
 .user-panel .info {
   overflow: hidden;

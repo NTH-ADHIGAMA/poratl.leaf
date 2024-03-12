@@ -30,6 +30,12 @@ public class ProjectDatasetLink {
 	@Column(name = "status")
 	private String status;
 
+	@Column(name = "file_name")
+	private String fileName;
+
+	@Column(name = "file_path")
+	private String filePath;
+
 	@Column(name = "record_Status")
 	private boolean recordStatus;
 
@@ -123,6 +129,22 @@ public class ProjectDatasetLink {
 
 	public void setLastModifiedBy(int lastModifiedBy) {
 		this.lastModifiedBy = lastModifiedBy;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 
 }

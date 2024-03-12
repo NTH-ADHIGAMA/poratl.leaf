@@ -16,4 +16,9 @@ public interface ProjectDatasetLinkRepository extends CrudRepository<ProjectData
 	@Query("SELECT u FROM ProjectDatasetLink u WHERE u.project = ?1")
 	public List<ProjectDatasetLink> findByProjectId(int projectId);
 
+	@Query("SELECT u FROM ProjectDatasetLink u WHERE u.project = ?1 and u.id=?2")
+    public ProjectDatasetLink findByProjectIdAndDataSet(int projectId, int dataSetId);
+
+
+
 }
